@@ -5,51 +5,36 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Wallet;
 use App\WalletType;
-use App\FixedValue;
 
 class WalletController extends Controller
 {
-
-    function __construct(Wallet $wallet)
-    {
-        $this->wallet = $wallet;
-    }
     
     public function index()
     {
-        $walletAll = $this->wallet->get();
-        $totalValue = $this->wallet->sum('value');
+        $wallets = Wallet::all();
+        $totalValue = $wallets->sum('value');
         
-        return view('wallet.index', compact('walletAll', 'totalValue'));
+        return view('wallet.index', compact('wallets', 'totalValue'));
     }
 
-    public function create(WalletType $type)
+    public function create()
     {
-        $walletType = $type->all();
-        return view('wallet.create', compact('walletType'));
+        return view('wallet.create', [
+            'walletType' => WalletType::all()
+        ]);
     }
 
     public function store(Request $request)
     {
-        $fixedV = new FixedValue();
+        $value = str_replace('.', '', $request->input('value'));
+        $value = str_replace(',', '', $value);
+        Wallet::create([
+            'name' => $request->name,
+            'type_id' => $request->type_id,
+            'value' => $value
+        ]);
 
-        $filler = $request->all();
-        $allWallet = $this->wallet->create($filler);
-
-        if (!empty($request->input('description')) && !empty($request->input('f_value'))) {
-
-            for ($i = 0; $i < count($request->input('f_value')); $i++) {
-
-                $fixedV->create([
-                    'wallet_id' => $allWallet->id,
-                    'description' => $request->description[$i],
-                    'f_value' => $request->f_value[$i]
-                ]);
-
-            }
-
-        }
-        return redirect()->route('carteiras.index');
+        return redirect()->route('wallets.index');
     }
 
     
@@ -59,30 +44,24 @@ class WalletController extends Controller
     }
 
     
-    public function edit($id, WalletType $type)
+    public function edit(Wallet $wallet)
     {
-       $walletAll = $this->wallet->find($id);
-       $walletType = $type->all();
-
-       return view('wallet.edit', compact('walletAll', 'walletType'));
+        $walletType = WalletType::all();
+        return view('wallet.edit', compact('wallet', 'walletType'));
     }
 
     
-    public function update(Request $request, $id)
+    public function update(Request $request, Wallet $wallet)
     {
-        $formAll = $request->all();
-        $walletInfo = $this->wallet->find($id);
-        $walletInfo->update($formAll);
-        return redirect()->route('carteiras.index');
+        $wallet->fill($request->all());
+        $wallet->save();
+        return redirect()->route('wallets.index');
     }
 
     
-    public function destroy($id)
+    public function destroy(Wallet $wallet)
     {
-        $walletDel = $this->wallet->find($id);
-        if (isset($walletDel)) {
-            $walletDel->delete();
-        }
-        return redirect()->route('carteiras.index');
+        $wallet->delete();
+        return redirect()->route('wallets.index');
     }
 }

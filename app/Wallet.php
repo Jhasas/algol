@@ -25,10 +25,5 @@ class Wallet extends Model
     {
         return $this->belongsTo('App\WalletType', 'type_id', 'id');
     }
-
-    public function fixed() 
-    {
-        return $this->hasMany('App\FixedValue');
-    }
-
+    
 }

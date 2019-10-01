@@ -17,14 +17,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
-
-
 Route::middleware('auth')->group(function() {
-
     Route::get('/home', 'HomeController@index')->name('home');
-
-    Route::resource('/carteiras', 'WalletController');
-
-    
-
+    Route::resource('/wallets', 'WalletController');
+    Route::resource('/expenses', 'ExpenseController');
 });

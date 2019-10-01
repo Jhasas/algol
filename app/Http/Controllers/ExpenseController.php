@@ -3,82 +3,66 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Expense;
 
 class ExpenseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
-        //
+        $expenses = Expense::all();
+        $totalSpend = Expense::sum('value');
+        return view('expense.index', compact('expenses', 'totalSpend'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function create()
     {
-        //
+        return view('expense.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function store(Request $request)
-    {
-        //
+    { 
+
+        for($i = 0; $i < count($request->input('name')); $i++){    
+            
+            $expenses = Expense::create([
+                'name' => $request->name[$i],
+                'value' => $request->value[$i],
+                'status' => $request->status[$i]
+            ]);
+
+        }
+        
+
+        return redirect()->route('expenses.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+   
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    
+    public function edit(Expense $expense)
     {
-        //
+        return view('expense.edit', compact('expense'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    
+    public function update(Request $request, Expense $expense)
     {
-        //
+        $expense->fill($request->all());
+        $expense->save();
+        return redirect()->route('expenses.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    
+    public function destroy(Expense $expense)
     {
-        //
+        $expense->delete();
+        return redirect()->route('expenses.index');
     }
 }

@@ -2,34 +2,34 @@
 
 @section('content')
 
-@if (count($walletAll) > 3)
+@if (count($wallets) > 3)
     <div class="row justify-content-center">
 
         <a href="#" class="btn btn-dark" style="margin-bottom: 20px" data-toggle="modal" data-target="#exampleModal"><span class="fa fa-plus"></span> Criar nova carteira</a>
 
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                          <div class="modal-body">
-                            Limites de criação de carteiras foi atingido
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                          </div>
-                        </div>
-                      </div>
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        Limites de criação de carteiras foi atingido
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>    
 
     </div>    
 @else
     <div class="row justify-content-center"> 
 
-        <a href="{{route('carteiras.create')}}" class="btn btn-dark" style="margin-bottom: 20px"><span class="fa fa-plus"></span> Criar nova carteira</a>
+        <a href="{{route('wallets.create')}}" class="btn btn-dark" style="margin-bottom: 20px"><span class="fa fa-plus"></span> Criar nova carteira</a>
     
     </div>
 @endif
 
-@foreach ($walletAll as $wallet)
+@foreach ($wallets as $wallet)
   
     <div class="row justify-content-center mt-4">
         <div class="col-md-3">
@@ -48,8 +48,8 @@
                 </div>
                 <div class="card-footer">
 
-                    <form action="{{ route('carteiras.destroy', $wallet->id) }}" method="POST">
-                        <a href="{{ route('carteiras.edit', $wallet->id) }}" class="btn btn-success">Editar</a>
+                    <form action="{{ route('wallets.destroy', $wallet->id) }}" method="POST">
+                        <a href="{{ route('wallets.edit', $wallet->id) }}" class="btn btn-success">Editar</a>
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger">Apagar</button>

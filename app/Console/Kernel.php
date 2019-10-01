@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\TransferirValorWallet::class,
+        Commands\SubtrairDespesasReceita::class,
     ];
 
     /**
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('TransferirValorWallet:transferencia')
                  ->daily('12:00');
+        $schedule->command('SubtrairDespesasReceita:subtrair')->daily('12:00');         
     }
 
     /**
